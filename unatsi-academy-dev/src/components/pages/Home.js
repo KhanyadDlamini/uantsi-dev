@@ -1,4 +1,28 @@
+import { useState } from "react";
+
 function Home() {
+    const [email, setEmail] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!email) return alert("Please enter an email");
+
+        try {
+            const response = await fetch("http://localhost:5000/send-email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+            alert(data.message);
+        } catch (error) {
+            console.error("Error sending email:", error);
+            alert("Failed to send email");
+        }
+    };
     return (
         <section className="page">
             <article className="main-hero" style={{ position: "relative", overflow: "hidden", height: "800px" }}>
@@ -209,7 +233,7 @@ function Home() {
 
                         const whatsappMessage = `Hello, my name is ${name}. My email is ${email}. Here is my message: ${message}`;
 
-                        const whatsappLink = `https://wa.me/26876595317?text=${encodeURIComponent(
+                        const whatsappLink = `https://wa.me/27649459612?text=${encodeURIComponent(
                             whatsappMessage
                         )}`;
                         window.open(whatsappLink, '_blank');
@@ -345,29 +369,22 @@ function Home() {
                         <p style={{ fontSize: '1rem', marginBottom: '10px' }}>
                             Stay updated with the latest news and events from Unatsi Academy!
                         </p>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const email = e.target.email.value;
-                                alert(`Thank you for subscribing, ${email}!`);
-                            }}
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '10px',
-                            }}
+
+
+                        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+                        //  style={{
+                        //         display: 'flex',
+                        //         flexDirection: 'column',
+                        //         gap: '10px',
+                        //     }}
                         >
                             <input
                                 type="email"
-                                name="email"
                                 placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
-                                style={{
-                                    padding: '10px',
-                                    borderRadius: '5px',
-                                    border: '1px solid #ccc',
-                                    width: '100%',
-                                }}
+                                style={{ padding: "10px", borderRadius: "5px", border: "1px solid #ccc", width: "100%" }}
                             />
                             <button
                                 type="submit"
@@ -416,5 +433,4 @@ function Home() {
         </section>
     );
 }
-
 export default Home;
